@@ -4,7 +4,10 @@ class Article extends Component {
 
   render() {
     return (
-        <div>Article</div>
+        <div>
+          <h1>{this.props.title}</h1>
+          <span>{this.props.published}</span>
+        </div>
     );
   }
 }
