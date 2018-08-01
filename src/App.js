@@ -21,7 +21,7 @@ class App extends Component {
   fetchArticles() {
     var self = this;
 
-    fetch('https://www.stellarbiotechnologies.com/media/press-releases/json?limit=1&offset=' + this.state.offset.toString())
+    fetch('https://www.stellarbiotechnologies.com/media/press-releases/json?limit=3&offset=' + this.state.offset.toString())
       .then(
         function(response) {
           if (response.status !== 200) {
@@ -30,15 +30,21 @@ class App extends Component {
           }
 
           response.json().then(function(data) {
-            let articles = self.state.articles;
-            data.news.forEach((article, index) => {
-              articles.push(data.news);
-            })
-
-            self.setState({
-              articles: articles,
-              offset: self.state.offset + 1
-            });
+            if(data.news.length == 0) {
+              self.setState({
+                hasMore: false
+              });
+            } else {
+              let articles = self.state.articles;
+              data.news.forEach((article, index) => {
+                articles.push(article);
+              })
+  
+              self.setState({
+                articles: articles,
+                offset: self.state.offset + 3
+              });
+            }
           });
         }
       )
@@ -48,33 +54,32 @@ class App extends Component {
   }
 
   render() {
-    const loader = <div>Loading ...</div>;
+    const loader = <div>Loading...</div>;
 
     var items = [];
 
-    console.log(this.state.articles);
-
     this.state.articles.forEach((article, index) => {
-      console.log(article[index], index);
       items.push(
         <Article 
-          title = {article[index].title}
-          published = {article[index].published}
-          key = {article[index].title + article[index].published}
+          title = {article.title}
+          published = {article.published}
+          key = {article.title + article.published}
         />
       );
     });
 
     return (
-      // <div>{items}</div>
       <InfiniteScroll
           pageStart={0}
           loadMore={this.fetchArticles.bind(this)}
           hasMore={this.state.hasMore}
           loader={loader}
           useWindow={true}
+          threshold={2}
       >
+        <div class="article-container">
           {items}
+        </div>
       </InfiniteScroll>
     );
   }

@@ -4,9 +4,9 @@ class Article extends Component {
 
   render() {
     return (
-        <div>
+        <div class="article">
           <h1>{this.props.title}</h1>
-          <span>{this.props.published}</span>
+          <span><b>Published:</b> {this.props.published}</span>
         </div>
     );
   }
